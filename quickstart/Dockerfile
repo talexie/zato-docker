@@ -2,7 +2,7 @@ FROM ghcr.io/zatosource/zato-3.2-quickstart-parent:latest
 
 # Install prerequisites for Ansible
 RUN set -x && \
-    apt-get update && \
+    apt-get update && apt upgrade -y && \
     apt-get -y install python3 python3-nacl python3-pip libffi-dev sudo
 
 # Install Ansible
@@ -17,12 +17,14 @@ COPY zato-ansible/quickstart/zato-quickstart.yaml    /zato-ansible/zato-quicksta
 COPY zato-ansible/quickstart/zato-quickstart-01.yaml /zato-ansible/zato-quickstart-01.yaml
 COPY zato-ansible/quickstart/zato-quickstart-02.yaml /zato-ansible/zato-quickstart-02.yaml
 COPY quickstart/run-zato-ansible.sh     /zato-ansible/run-zato-ansible.sh
-
+COPY quickstart/settings.py /opt/settings.py
+RUN chown -R zato:zato /opt/settings.py
 
 # Make sure that Docker mounts Python requirements as a file
 RUN mkdir -p /opt/hot-deploy/python-reqs/ && \
     touch /opt/hot-deploy/python-reqs/requirements.txt && \
     chown -R zato:zato /opt/hot-deploy/
+    
 
 # Signal to Ansible that it should provision a new environment
 ENV Zato_Run_Quickstart_Step_02=true
