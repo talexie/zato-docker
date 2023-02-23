@@ -117,7 +117,7 @@
     mkdir -p /opt/zato/.ansible/tmp
     chown -R zato:zato /opt/zato/.ansible
 
-- name: Install Zato {{ zato_version }} updates (01)
+- name: Patch and get Zato {{ zato_version }} updates (01)
   when: zato_install_binaries
   become: true
   become_user: "zato"
@@ -126,4 +126,10 @@
     git pull
     cd /zato_patches/patches
     cp --parents * ~/current/patches
+
+- name: Install Zato {{ zato_version }} updates (01)
+  when: zato_install_binaries
+  become: true
+  become_user: "zato"
+  shell: |
     ~/current/update.sh
