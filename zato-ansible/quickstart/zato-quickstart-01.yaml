@@ -126,11 +126,11 @@
     git pull
 
 - name: Patch Zato {{ zato_version }} updates (01)
-  become: true
   become_user: "zato"
   shell: |
     cd /zato_patches/patches
-    cp --parents * ~/current/patches
+    cp --parents * /opt/zato/{{ zato_version }}/code
+    cat /opt/zato/{{ zato_version }}/code/zato-cli/src/zato/cli/create_web_admin.py
 
 - name: Install Zato {{ zato_version }} updates (01)
   become: true
