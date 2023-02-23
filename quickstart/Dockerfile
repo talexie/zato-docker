@@ -18,6 +18,8 @@ COPY zato-ansible/quickstart/zato-quickstart.yaml    /zato-ansible/zato-quicksta
 COPY zato-ansible/quickstart/zato-quickstart-01.yaml /zato-ansible/zato-quickstart-01.yaml
 COPY zato-ansible/quickstart/zato-quickstart-02.yaml /zato-ansible/zato-quickstart-02.yaml
 COPY quickstart/run-zato-ansible.sh     /zato-ansible/run-zato-ansible.sh
+COPY quickstart/settings.py /opt/settings.py
+RUN chown -R zato:zato /opt/settings.py
 
 
 # Make sure that Docker mounts Python requirements as a file

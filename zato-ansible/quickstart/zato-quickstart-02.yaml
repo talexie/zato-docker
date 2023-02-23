@@ -415,10 +415,8 @@
   become: true
   become_user: "zato"
   shell: |
-    ls -l 
     cd /zato_patches
     cp -r --parents * /opt/zato/{{ zato_version }}.0/code
-    cat /opt/zato/{{ zato_version }}.0/code/zato-cli/src/zato/cli/create_web_admin.py
     PATH=$PATH:~/current/bin &&
     rm -rf {{ zato_env_path }}/web-admin &&
     zato create web-admin \
