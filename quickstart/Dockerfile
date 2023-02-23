@@ -9,10 +9,8 @@ RUN set -x && \
 RUN pip3 install ansible
 
 # Copy the base Ansible playbook for use inside the container
-RUN ls -l
-WORKDIR /patches
 RUN mkdir -p /zato_patches
-RUN cp -r --parents * /zato_patches
+RUN cp -r --parents patches/* /zato_patches
 COPY quickstart/test_odb_tables.sql    /var/lib/postgresql/scripts/test_odb_tables.sql
 COPY quickstart/test_odb_cluster.sql    /var/lib/postgresql/scripts/test_odb_cluster.sql
 COPY quickstart/test_server_cluster.sql    /var/lib/postgresql/scripts/test_server_cluster.sql

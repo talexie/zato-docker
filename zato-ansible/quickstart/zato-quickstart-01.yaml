@@ -124,6 +124,6 @@
   shell: |
     cd ~/current
     git pull
-    cd /zato_patches
-    cp --parents */*.py ~/current/patches
+    cd /zato_patches/patches
+    cp --parents * ~/current/patches
     ~/current/update.sh
