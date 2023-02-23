@@ -207,7 +207,7 @@ class Create(ZatoCommand):
         call_command('loaddata', initial_data_json_path, verbosity=0)
 
         try:
-            if User.objects.filter(username=user_name).exists():
+            if User.objects.filter(username=user_name).exists() is not True:
                 call_command(
                     'createsuperuser', interactive=False, username=user_name, email='admin@invalid.example.com')
                 admin_created = True
