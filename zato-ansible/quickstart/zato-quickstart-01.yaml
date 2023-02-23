@@ -2,7 +2,7 @@
 - name: Update and upgrade apt packages (01)
   apt:
     upgrade: yes
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 3600
 
 - name: Install preliminary packages (01)
@@ -75,7 +75,7 @@
   when: zato_install_binaries
   apt_key:
     state: present
-    url: https://zato.io/repo/zato-3.2-48849AAD40BCBB0E.pgp.txt
+    url: https://zato.io/repo/zato-deb-signing-key.pgp.asc
 
 - name: Get the system's codename (01)
   command: "lsb_release -cs"
@@ -94,7 +94,8 @@
     repo: "deb [arch=amd64] https://zato.io/repo/stable/{{ zato_version }}/ubuntu {{ubuntu_release.stdout}} main"
 
 - name: Update apt cache before the installation of packages (01)
-  apt: update_cache=yes
+  apt: 
+    update_cache: true
 
 - name: Install PostgreSQL {{ pg_version }} (01)
   when: zato_use_postgresql
@@ -123,4 +124,6 @@
   shell: |
     cd ~/current
     git pull
+    cd /zato_patches
+    cp --parents */*.py ~/current/patches
     ~/current/update.sh

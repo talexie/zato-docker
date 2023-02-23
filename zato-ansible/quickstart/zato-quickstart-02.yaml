@@ -1,8 +1,11 @@
-
+- name: Mark Zato on hold via apt-get (02)
+  shell: |
+    apt-mark hold zato
+    
 - name: Update and upgrade apt packages (02)
   apt:
     upgrade: yes
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 3600
 
 - name: Install NodeJS (for testing) (02)
