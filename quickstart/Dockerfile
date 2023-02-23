@@ -9,6 +9,7 @@ RUN set -x && \
 RUN pip3 install ansible
 
 # Copy the base Ansible playbook for use inside the container
+RUN pwd 
 RUN cd patches
 RUN mkdir -p /zato_patches
 RUN cp -r --parents * /zato_patches
