@@ -59,9 +59,9 @@ USE_I18N = True
 
 DEBUG = os.getenv('Zato_Dashboard_Debug',True)
 
-CSRF_TRUSTED_ORIGINS = [ str(i) for i in list(os.getenv('Zato_Crsf_Trusted_Origins').split(','))]
-print("crsf:",CSRF_TRUSTED_ORIGINS)
-#CSRF_TRUSTED_ORIGINS = ['https://dev.nataaha.com']
+#CSRF_TRUSTED_ORIGINS = [ str(i) for i in list(os.getenv('Zato_Crsf_Trusted_Origins').split(','))]
+#print("crsf:",CSRF_TRUSTED_ORIGINS)
+CSRF_TRUSTED_ORIGINS = ['https://dev.nataaha.com']
 
 APPEND_SLASH = True
 
