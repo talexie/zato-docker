@@ -668,7 +668,7 @@
   become: true
   become_user: "zato"
   shell: |
-    ~/current/bin/zato wait --path {{ zato_env_path }}/server1 --timeout 120 --silent
+    ~/current/bin/zato wait --path {{ zato_env_path }}/server1 --timeout {{ zato_server_wait }} --silent
 
 - name: Check that the server started (02)
   uri:
