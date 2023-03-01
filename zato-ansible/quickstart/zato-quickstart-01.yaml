@@ -102,7 +102,6 @@
   apt:
     state: latest
     name: openjdk-11-jdk
-    update_cache: true
 
 - name: Install PostgreSQL {{ pg_version }} (01)
   when: zato_use_postgresql
