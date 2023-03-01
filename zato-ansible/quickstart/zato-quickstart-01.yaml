@@ -98,14 +98,10 @@
 
 - name: Install OpenJDK (for Spark Analytics) (02)
   when: zato_run_spark
-  register: run_spark
   apt:
     state: latest
     name: openjdk-11-jdk
-
-- name: Debug Installing  OpenJDK for Apache Spark
-  ansible.builtin.debug:
-    msg: "{{ run_spark }}"
+    update_cache: true
 
 - name: Install PostgreSQL {{ pg_version }} (01)
   when: zato_use_postgresql
