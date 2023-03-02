@@ -3,7 +3,7 @@ FROM ghcr.io/zatosource/zato-3.2-quickstart-parent:latest
 # Install prerequisites for Ansible
 RUN set -x && \
     apt-get update && \
-    apt-get -y install python3 python3-nacl python3-pip libffi-dev sudo
+    apt-get -y install python3 python3-nacl python3-pip libffi-dev sudo openjdk-11-jdk
 
 # Install Ansible
 RUN pip3 install ansible
