@@ -104,7 +104,7 @@
       set_fact:
 
         zato_python_reqs: "{{ zato_python_reqs_tmp if zato_has_python_reqs_in_tmp else zato_python_reqs_opt }}"
-        zato_run_spark: "{{ Zato_Run_Spark | default(zato_run_spark) or default(True)}}"
+        zato_run_spark: "{{ Zato_Run_Spark | default(True)}}"
 
         zato_ssh_user_password: "{{ Zato_SSH_Password | default(zato_ssh_user_password) or zato_ssh_user_password }}"
         zato_ide_publisher_password: "{{ Zato_IDE_Password | default(zato_ide_publisher_password) or zato_ide_publisher_password }}"
