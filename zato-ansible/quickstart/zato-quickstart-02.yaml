@@ -417,7 +417,6 @@
   shell: |
     cd /zato_patches
     cp -r --parents * /opt/zato/{{ zato_version }}.0/code
-    cp /opt/settings.py /opt/zato/current/zato-web-admin/src/zato/admin
     PATH=$PATH:~/current/bin &&
     rm -rf {{ zato_env_path }}/web-admin &&
     zato create web-admin \

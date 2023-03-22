@@ -41,7 +41,7 @@ env_keys = [
     'Zato_Run_Internal_Tests',
     'Zato_Run_Quickstart_Step_01',
     'Zato_Run_Quickstart_Step_02',
-    'Zato_Dashboard_Debug',
+    'Zato_Dashboard_Debug_Enabled',
     'Zato_Crsf_Trusted_Origins',
     'Zato_Run_Spark'
 ]

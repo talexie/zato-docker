@@ -57,13 +57,14 @@ INTERNAL_IPS = ('127.0.0.1',)
 # to load the internationalization machinery.
 USE_I18N = True
 
-DEBUG = os.getenv('Zato_Dashboard_Debug',True)
+DEBUG = os.environ.get('Zato_Dashboard_Debug_Enabled') or False
 
-#CSRF_TRUSTED_ORIGINS = [ str(i) for i in list(os.getenv('Zato_Crsf_Trusted_Origins').split(','))]
+#CSRF_TRUSTED_ORIGINS = [ str(i) for i in list(os.environ.get('Zato_Crsf_Trusted_Origins').split(','))]
 #print("crsf:",CSRF_TRUSTED_ORIGINS)
 CSRF_TRUSTED_ORIGINS = ['https://dev.nataaha.com']
 
 APPEND_SLASH = True
+SECURE_CONTENT_TYPE_NOSNIFF = False
 
 # Absolute path to the directory that holds media.
 # Example: '/home/media/media.lawrence.com/'
@@ -79,6 +80,16 @@ MEDIA_URL = '/static/'
 # Examples: 'http://foo.com/media/', '/media/'.
 ADMIN_MEDIA_PREFIX = '/media/'
 
+CSP_DEFAULT_SRC = ["'none'"]
+CSP_IMG_SRC     = ["'self'"]
+CSP_STYLE_SRC   = ["'self'"]
+CSP_SCRIPT_SRC  = ["'self'", "'unsafe-inline'", "'unsafe-eval'"]
+CSP_CONNECT_SRC = ["'self'"]
+CSP_FORM_ACTION = ["'self'"]
+CSP_STYLE_SRC_ATTR = ["'self'", "'unsafe-inline'"]
+CSP_STYLE_SRC_ELEM = ["'self'", "'unsafe-inline'"]
+CSP_INCLUDE_NONCE_IN = ["'script-src'"]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -86,6 +97,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'csp.middleware.CSPMiddleware',
     'zato.admin.middleware.ZatoMiddleware',
 ]
 
@@ -103,6 +115,7 @@ TEMPLATES = [{
             'django.template.context_processors.static',
             'django.template.context_processors.tz',
             'django.contrib.messages.context_processors.messages',
+            'csp.context_processors.nonce'
         ],
         'loaders': ['django.template.loaders.filesystem.Loader']
     },
