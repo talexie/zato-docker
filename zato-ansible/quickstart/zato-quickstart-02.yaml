@@ -632,11 +632,6 @@
       ZATO begin backend bck_http_plain
         server http_plain--{{ zato_server_name }} {{ zato_server_host }}:{{ zato_server_port }} check inter 2s rise 2 fall 2 # ZATO backend bck_http_plain:server--{{ zato_server_name }}
 
-- name: Copy settings to (dashboard) (02)
-  become: true
-  become_user: "zato"
-  shell: |
-    cp /opt/settings.py /opt/zato/current/zato-web-admin/src/zato/admin
     
 - name: Start the quickstart environment (server) (02)
   become: true
