@@ -714,6 +714,15 @@
     touch -c /opt/hot-deploy/user-conf/*
     touch -c /tmp/zato-user-conf/*
 
+- name: Make sure additional packages are deployed if they are missed (02)
+  become: true
+  become_user: "zato"
+  shell: |
+    touch -c /opt/hot-deploy/python-reqs/*
+    touch -c /tmp/zato-user-reqs/*
+    ~/current/bin/pip install --upgrade -r /opt/hot-deploy/python-reqs/requirements.txt
+
+
 - name: Run the pre-enmasse script (02)
   when: zato_pre_enmasse_script
   shell: |
