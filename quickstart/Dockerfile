@@ -3,7 +3,7 @@ FROM ghcr.io/zatosource/zato-3.2-quickstart-parent:latest
 # Install prerequisites for Ansible
 RUN set -x && \
     apt-get update && \
-    apt-get -y install python3 python3-nacl python3-pip libffi-dev sudo openjdk-11-jdk
+    apt-get -y install python3 python3-nacl python3-pip libffi-dev sudo openjdk-11-jdk libkrb5-dev
 
 # Install Ansible
 RUN pip3 install ansible
@@ -30,5 +30,6 @@ RUN mkdir -p /opt/hot-deploy/python-reqs/ && \
 # Signal to Ansible that it should provision a new environment
 ENV Zato_Run_Quickstart_Step_02=true
 
+USER zato
 # Run Ansible provisioning when we start up (step 02)
 ENTRYPOINT ["/zato-ansible/run-zato-ansible.sh"]
