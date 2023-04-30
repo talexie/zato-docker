@@ -100,7 +100,7 @@
   when: zato_run_spark
   apt:
     state: latest
-    name: openjdk-11-jdk
+    name: openjdk-17-jdk
     update_cache: true
 
 - name: Install PostgreSQL {{ pg_version }} (01)
