@@ -34,5 +34,5 @@ jobs:
           push: true
           no-cache: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/zato-3.2-quickstart:1.5
+            ${{ secrets.DOCKERHUB_USERNAME }}/zato-3.2-quickstart:1.6
             ${{ secrets.DOCKERHUB_USERNAME }}/zato-3.2-quickstart:latest

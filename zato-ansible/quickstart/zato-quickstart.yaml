@@ -135,7 +135,7 @@
         zato_server_num: "{{ Zato_Host_Server_Num | default('2') or '2' }}"
         zato_server_name: "{{ Zato_Host_Server_Name | default('server1') or 'server1' }}"
 
-        zato_server_wait: "{{ Zato_Host_Server_Wait | default(120) or 120 }}"
+        zato_server_wait: "{{ Zato_Host_Server_Wait | default(240) or 240 }}"
 
         zato_root_level_user: "{{ Zato_Root_Level_User | default(None) }}"
         zato_hot_deploy_prefer_snapshots: "{{ Zato_Hot_Deploy_Prefer_Snapshots | default(True) }}"

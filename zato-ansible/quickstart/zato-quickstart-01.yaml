@@ -3,6 +3,7 @@
   apt:
     upgrade: yes
     update_cache: true
+    cache_valid_time: 3600
 
 - name: Install preliminary packages (01)
   apt:
@@ -74,7 +75,7 @@
   when: zato_install_binaries
   apt_key:
     state: present
-    url: https://zato.io/repo/zato-deb-signing-key.pgp.asc
+    url: https://zato.io/repo/zato-signing-key.pgp.asc
 
 - name: Get the system's codename (01)
   command: "lsb_release -cs"
