@@ -354,6 +354,7 @@
         --secret-key {{ zato_secret_key }} \
         --admin-invoke-password {{ zato_dashboard_admin_password }} \
         --verbose \
+        --skip-if-exists \
         {{ zato_cluster_name }}
 
 - name: Check if Server exists in cluster (02)
@@ -370,6 +371,37 @@
       cluster_name: "{{ zato_cluster_name }}"
   register: server_exists
 
+- name: Create Web Admin/Dashboard (02)
+  become: true
+  become_user: "zato"
+  shell: |
+    cd /zato_patches
+    cp -r --parents * /opt/zato/{{ zato_version }}.0/code
+    cp /opt/settings.py /opt/zato/current/zato-web-admin/src/zato/admin
+    PATH=$PATH:~/current/bin &&
+    rm -rf {{ zato_env_path }}/web-admin &&
+    zato create web-admin \
+        {{ zato_env_path }}/web-admin/ \
+        --odb-type {{ zato_db_type }} \
+        --odb-host {{ zato_db_host }} \
+        --odb-port {{ zato_db_port }} \
+        --odb-db-name {{ zato_db_main }} \
+        --odb-user {{ zato_db_username_main }} \
+        --odb-password '{{ zato_db_password_main }}' \
+        --skip-if-exists \
+        --verbose \
+        --admin-invoke-password {{ zato_dashboard_admin_password }}
+            
+- name: Create Load Balancer (02)
+  become: true
+  become_user: "zato"
+  shell: |
+    PATH=$PATH:~/current/bin &&
+    rm -rf {{ zato_env_path }}/load-balancer &&
+    zato create load-balancer \
+        --verbose \
+        {{ zato_env_path }}/load-balancer/
+
 - name: Debug Servers in cluster
   ansible.builtin.debug:
     msg: "Debug: {{ server_exists }}"
@@ -381,6 +413,9 @@
     PATH=$PATH:~/current/bin &&
     rm -rf {{ zato_env_path }}/server1 &&
     zato create server \
+        {{ zato_env_path }}/server1/ \
+        {{ zato_server_name }} \
+        {{ zato_cluster_name }} \
         --odb-type {{ zato_db_type }} \
         --odb-host {{ zato_db_host }} \
         --odb-port {{ zato_db_port }} \
@@ -393,41 +428,7 @@
         --scheduler-host {{ zato_scheduler_host }} \
         --scheduler-port {{ zato_scheduler_port }} \
         --secret-key {{ zato_secret_key }} \
-        --jwt-secret {{ zato_jwt_secret }} \
-        {{ zato_env_path }}/server1/ \
-        {{ zato_cluster_name }} \
-        {{ zato_server_name }}
-
-- name: Create Load Balancer (02)
-  become: true
-  become_user: "zato"
-  shell: |
-    PATH=$PATH:~/current/bin &&
-    rm -rf {{ zato_env_path }}/load-balancer &&
-    zato create load-balancer \
-        --verbose \
-        {{ zato_env_path }}/load-balancer/
-
-- name: Create Web Admin/Dashboard (02)
-  become: true
-  become_user: "zato"
-  shell: |
-    cd /zato_patches
-    cp -r --parents * /opt/zato/{{ zato_version }}.0/code
-    cp /opt/settings.py /opt/zato/current/zato-web-admin/src/zato/admin
-    PATH=$PATH:~/current/bin &&
-    rm -rf {{ zato_env_path }}/web-admin &&
-    zato create web-admin \
-        --odb-type {{ zato_db_type }} \
-        --odb-host {{ zato_db_host }} \
-        --odb-port {{ zato_db_port }} \
-        --odb-db-name {{ zato_db_main }} \
-        --odb-user {{ zato_db_username_main }} \
-        --odb-password '{{ zato_db_password_main }}' \
-        --skip-if-exists \
-        --verbose \
-        --admin-invoke-password {{ zato_dashboard_admin_password }} \
-        {{ zato_env_path }}/web-admin/
+        --jwt-secret {{ zato_jwt_secret }}        
 
 - name: Create Scheduler (02)
   become: true
@@ -436,6 +437,7 @@
     PATH=$PATH:~/current/bin &&
     rm -rf {{ zato_env_path }}/scheduler &&
     zato create scheduler \
+        {{ zato_env_path }}/scheduler/ \
         --odb-type {{ zato_db_type }} \
         --odb-host {{ zato_db_host }} \
         --odb-port {{ zato_db_port }} \
@@ -445,9 +447,9 @@
         --skip-if-exists \
         --verbose \
         --cluster-name {{ zato_cluster_name }} \
+        --server-path {{ zato_env_path }}/server1/ }} \
         --secret-key {{ zato_secret_key }} \
-        --initial-sleep-time 60 \
-        {{ zato_env_path }}/scheduler/
+        --initial-sleep-time 30        
 
 - name: Enable Redis (02)
   when: zato_enable_redis
