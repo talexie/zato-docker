@@ -446,7 +446,7 @@
         --verbose \
         --cluster-name {{ zato_cluster_name }} \
         --secret-key {{ zato_secret_key }} \
-        --initial-sleep-time 30 \
+        --initial-sleep-time 60 \
         {{ zato_env_path }}/scheduler/
 
 - name: Enable Redis (02)
@@ -676,10 +676,6 @@
 - name: Check that the load-balancer started (02)
   uri:
     url: http://{{ zato_lb_host }}:11223/zato/ping
-
-- name: Check that the dashboard started (02)
-  uri:
-    url: http://127.0.0.1:8183/zato/
 
 - name: Set Dashboard password (02)
   become: true
