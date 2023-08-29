@@ -391,7 +391,7 @@
         --skip-if-exists \
         --verbose \
         --admin-invoke-password {{ zato_dashboard_admin_password }}
-            
+
 - name: Create Load Balancer (02)
   become: true
   become_user: "zato"
@@ -414,8 +414,8 @@
     rm -rf {{ zato_env_path }}/server1 &&
     zato create server \
         {{ zato_env_path }}/server1/ \
-        {{ zato_server_name }} \
         {{ zato_cluster_name }} \
+        {{ zato_server_name }} \
         --odb-type {{ zato_db_type }} \
         --odb-host {{ zato_db_host }} \
         --odb-port {{ zato_db_port }} \
