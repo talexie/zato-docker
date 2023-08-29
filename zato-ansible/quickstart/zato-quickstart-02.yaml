@@ -447,7 +447,7 @@
         --skip-if-exists \
         --verbose \
         --cluster-name {{ zato_cluster_name }} \
-        --server-path {{ zato_env_path }}/server1/ }} \
+        --server-path {{ zato_env_path }}/server1/ \
         --secret-key {{ zato_secret_key }} \
         --initial-sleep-time 30        
 
