@@ -74,7 +74,7 @@
     force: "yes"
     name: "{{ zato_db_main }}"
 
-#- name: Drop the SQL database if it exists (PG -> pub/sub) (02)
+# - name: Drop the SQL database if it exists (PG -> pub/sub) (02)
 #  when: zato_use_postgresql
 #  become: true
 #  become_user: "postgres"
@@ -141,7 +141,7 @@
     force: "yes"
     name: "{{ zato_db_pubsub }}"
 
-#- name: Drop the SQL user if it exists (PG -> main) (02)
+# - name: Drop the SQL user if it exists (PG -> main) (02)
 #  when: zato_use_postgresql
 #  become: true
 #  become_user: "postgres"
@@ -161,7 +161,7 @@
     state: absent
     name: "{{ zato_db_username_main }}"
 
-#- name: Drop the SQL user if it exists (PG -> pub/sub) (02)
+# - name: Drop the SQL user if it exists (PG -> pub/sub) (02)
 #  when: zato_use_postgresql
 #  become: true
 #  become_user: "postgres"
@@ -643,7 +643,7 @@
   become_user: "root"
   shell: |
     echo "{{ zato_start_preamble }}" > {{ zato_env_path }}/start-server-fg.sh
-    echo "~/current/bin/zato start {{ zato_env_path }}/server1 >> {{ zato_env_path }}/start-server-fg.sh
+    echo "~/current/bin/zato start {{ zato_env_path }}/server1" >> {{ zato_env_path }}/start-server-fg.sh
 
     echo "{{ zato_start_preamble }}" > {{ zato_env_path }}/start-web-admin-fg.sh
     echo "~/current/bin/zato start {{ zato_env_path }}/web-admin --fg --env-file /opt/hot-deploy/enmasse/env.ini" >> {{ zato_env_path }}/start-web-admin-fg.sh
