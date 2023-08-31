@@ -50,6 +50,7 @@
 
     zato_use_mysql: "{{ Zato_Use_MySQL | default(True) }}"
     zato_use_postgresql: "{{ Zato_Use_PostgreSQL | default(True) }}"
+    zato_quickstart_disabled: "{{ Zato_Quickstart_Disabled | default(True) }}"
 
     zato_install_playwright: "{{ Zato_Install_Playwright | default(False) }}"
 
@@ -97,6 +98,8 @@
 
       zato_db_username_main: "{{ zato_db_username_main }}"
       zato_db_password_main: "{{ zato_db_password_main }}"
+      
+      zato_quickstart_disabled: "{{ zato_quickstart_disabled }}"
 
   tasks:
 
@@ -105,6 +108,7 @@
 
         zato_python_reqs: "{{ zato_python_reqs_tmp if zato_has_python_reqs_in_tmp else zato_python_reqs_opt }}"
         zato_run_spark: "{{ Zato_Run_Spark | default(True)}}"
+        zato_quickstart_disabled: "{{ Zato_Quickstart_Disabled | default(True) }}"
 
         zato_ssh_user_password: "{{ Zato_SSH_Password | default(zato_ssh_user_password) or zato_ssh_user_password }}"
         zato_ide_publisher_password: "{{ Zato_IDE_Password | default(zato_ide_publisher_password) or zato_ide_publisher_password }}"

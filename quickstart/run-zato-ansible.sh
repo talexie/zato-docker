@@ -43,7 +43,8 @@ env_keys = [
     'Zato_Run_Quickstart_Step_02',
     'Zato_Dashboard_Debug_Enabled',
     'Zato_Crsf_Trusted_Origins',
-    'Zato_Run_Spark'
+    'Zato_Run_Spark',
+    'Zato_Quickstart_Disabled'
 ]
 
 # Build a mapping of environment values that were provided on input

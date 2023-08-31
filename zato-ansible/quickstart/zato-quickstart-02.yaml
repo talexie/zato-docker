@@ -53,18 +53,18 @@
   shell: |
     DEBIAN_FRONTEND=noninteractive service ssh restart
 
-- name: Drop the SQL database if it exists (PG -> main) (02)
-  when: zato_use_postgresql
-  become: true
-  become_user: "postgres"
-  community.postgresql.postgresql_db:
-    db: "{{ zato_db_main }}"
-    login_host: "{{ zato_db_host }}"
-    login_user: "{{ zato_db_username_main }}"
-    login_password: "{{ zato_db_password_main }}"
-    state: absent
-    force: "yes"
-    name: "{{ zato_db_main }}"
+# - name: Drop the SQL database if it exists (PG -> main) (02)
+#  when: zato_use_postgresql
+#  become: true
+#  become_user: "postgres"
+#  community.postgresql.postgresql_db:
+#    db: "{{ zato_db_main }}"
+#    login_host: "{{ zato_db_host }}"
+#    login_user: "{{ zato_db_username_main }}"
+#    login_password: "{{ zato_db_password_main }}"
+#    state: absent
+#    force: "yes"
+#    name: "{{ zato_db_main }}"
 
 - name: Drop the SQL database if it exists (MySQL -> main) (02)
   when: zato_use_mysql
@@ -74,18 +74,18 @@
     force: "yes"
     name: "{{ zato_db_main }}"
 
-- name: Drop the SQL database if it exists (PG -> pub/sub) (02)
-  when: zato_use_postgresql
-  become: true
-  become_user: "postgres"
-  community.postgresql.postgresql_db:
-    db: "{{ zato_db_main }}"
-    login_host: "{{ zato_db_host }}"
-    login_user: "{{ zato_db_username_main }}"
-    login_password: "{{ zato_db_password_main }}"
-    state: absent
-    force: "yes"
-    name: "{{ zato_db_pubsub }}"
+#- name: Drop the SQL database if it exists (PG -> pub/sub) (02)
+#  when: zato_use_postgresql
+#  become: true
+#  become_user: "postgres"
+#  community.postgresql.postgresql_db:
+#    db: "{{ zato_db_main }}"
+#    login_host: "{{ zato_db_host }}"
+#    login_user: "{{ zato_db_username_main }}"
+#    login_password: "{{ zato_db_password_main }}"
+#    state: absent
+#    force: "yes"
+#    name: "{{ zato_db_pubsub }}"
 
 - name: Drop the SQL database if it exists (MySQL -> pub/sub) (02)
   when: zato_use_mysql
@@ -100,7 +100,6 @@
   become: true
   become_user: "postgres"
   community.postgresql.postgresql_db:
-    db: "{{ zato_db_main }}"
     login_host: "{{ zato_db_host }}"
     login_user: "{{ zato_db_username_main }}"
     login_password: "{{ zato_db_password_main }}"
@@ -142,18 +141,18 @@
     force: "yes"
     name: "{{ zato_db_pubsub }}"
 
-- name: Drop the SQL user if it exists (PG -> main) (02)
-  when: zato_use_postgresql
-  become: true
-  become_user: "postgres"
-  community.postgresql.postgresql_user:
-    db: "{{ zato_db_main }}"
-    login_host: "{{ zato_db_host }}"
-    login_user: "{{ zato_db_username_main }}"
-    login_password: "{{ zato_db_password_main }}"
-    state: absent
-    fail_on_user: "no"
-    name: "{{ zato_db_username_main }}"
+#- name: Drop the SQL user if it exists (PG -> main) (02)
+#  when: zato_use_postgresql
+#  become: true
+#  become_user: "postgres"
+#  community.postgresql.postgresql_user:
+#    db: "{{ zato_db_main }}"
+#    login_host: "{{ zato_db_host }}"
+#    login_user: "{{ zato_db_username_main }}"
+#    login_password: "{{ zato_db_password_main }}"
+#    state: absent
+#    fail_on_user: "no"
+#    name: "zato_{{ zato_db_username_main }}"
 
 - name: Drop the SQL user if it exists (MySQL -> main) (02)
   when: zato_use_mysql
@@ -162,18 +161,18 @@
     state: absent
     name: "{{ zato_db_username_main }}"
 
-- name: Drop the SQL user if it exists (PG -> pub/sub) (02)
-  when: zato_use_postgresql
-  become: true
-  become_user: "postgres"
-  community.postgresql.postgresql_user:
-    db: "{{ zato_db_main }}"
-    login_host: "{{ zato_db_host }}"
-    login_user: "{{ zato_db_username_main }}"
-    login_password: "{{ zato_db_password_main }}"
-    state: absent
-    fail_on_user: "no"
-    name: "{{ zato_db_username_pubsub }}"
+#- name: Drop the SQL user if it exists (PG -> pub/sub) (02)
+#  when: zato_use_postgresql
+#  become: true
+#  become_user: "postgres"
+#  community.postgresql.postgresql_user:
+#    db: "{{ zato_db_pubsub }}"
+#    login_host: "{{ zato_db_host }}"
+#    login_user: "{{ zato_db_username_main }}"
+#    login_password: "{{ zato_db_password_main }}"
+#    state: absent
+#    fail_on_user: "no"
+#    name: "zato_pub_{{ zato_db_username_pubsub }}"
 
 - name: Drop the SQL user if it exists (MySQL -> pub/sub) (02)
   when: zato_use_mysql
@@ -318,8 +317,28 @@
   shell: |
     rm -rf {{ zato_env_path }}
 
+- name: Create a quickstart environment (02)
+  become: true
+  become_user: "zato"
+  when: zato_quickstart_disabled
+  shell: |
+    PATH=$PATH:~/current/bin &&
+    {{ zato_env_path }}/zato-qs-stop.sh || true &&
+    rm -rf {{ zato_env_path }} &&
+    zato quickstart \
+        {{ zato_env_path }} \
+        --odb-type {{ zato_db_type }} \
+        --odb-host {{ zato_db_host }} \
+        --odb-port {{ zato_db_port }} \
+        --odb-db-name {{ zato_db_main }} \
+        --odb-user {{ zato_db_username_main }} \
+        --odb-password '{{ zato_db_password_main }}' \
+        --cluster-name '{{ zato_cluster_name }}' \
+        --servers {{ zato_server_num }}
+        --verbose
+
 - name: Check if ODB cluster table exists (02)
-  when: zato_use_postgresql
+  when: zato_use_postgresql && zato_quickstart_disabled
   become: true
   become_user: "postgres"
   community.postgresql.postgresql_script:
@@ -331,7 +350,7 @@
   register: cluster_table_exists
 
 - name: Create ODB if it is a new environment (02)
-  when: cluster_table_exists.rowcount < 1
+  when: cluster_table_exists.rowcount < 1 && zato_quickstart_disabled
   become: true
   become_user: "zato"
   shell: |
@@ -343,10 +362,11 @@
         --odb-db-name {{ zato_db_main }} \
         --odb-user {{ zato_db_username_main }} \
         --odb-password '{{ zato_db_password_main }}' \
+        --skip-if-exists
         --verbose
 
 - name: Check if ODB cluster exists (02)
-  when: zato_use_postgresql
+  when: zato_use_postgresql && zato_quickstart_disabled
   become: true
   become_user: "postgres"
   community.postgresql.postgresql_script:
@@ -364,7 +384,7 @@
     msg: "{{ cluster_exists }}"
 
 - name: Create ODB Cluster (02)
-  when: cluster_exists.rowcount == 0
+  when: cluster_exists.rowcount == 0 && zato_quickstart_disabled
   become: true
   become_user: "zato"
   shell: |
@@ -381,11 +401,13 @@
         --lb-agent_port {{ zato_lb_agent_port }} \
         --secret-key {{ zato_secret_key }} \
         --admin-invoke-password {{ zato_dashboard_admin_password }} \
+        --skip-if-exists
         --verbose \
         {{ zato_cluster_name }}
 
 - name: Check if Server exists in cluster (02)
   become: true
+  when: zato_quickstart_disabled
   become_user: "postgres"
   community.postgresql.postgresql_script:
     db: "{{ zato_db_main }}"
@@ -401,12 +423,12 @@
 - name: Create Web Admin/Dashboard (02)
   become: true
   become_user: "zato"
+  when: zato_quickstart_disabled
   shell: |
     cd /zato_patches
     cp -r --parents * /opt/zato/{{ zato_version }}.0/code
     cp /opt/settings.py /opt/zato/current/zato-web-admin/src/zato/admin
     PATH=$PATH:~/current/bin &&
-    rm -rf {{ zato_env_path }}/web-admin &&
     zato create web-admin \
         {{ zato_env_path }}/web-admin/ \
         --odb-type {{ zato_db_type }} \
@@ -421,9 +443,9 @@
 - name: Create Load Balancer (02)
   become: true
   become_user: "zato"
+  when: zato_quickstart_disabled
   shell: |
     PATH=$PATH:~/current/bin &&
-    rm -rf {{ zato_env_path }}/load-balancer &&
     zato create load-balancer \
         --verbose \
         {{ zato_env_path }}/load-balancer/
@@ -435,9 +457,9 @@
 - name: Create Server (02)
   become: true
   become_user: "zato"
+  when: zato_quickstart_disabled
   shell: |
     PATH=$PATH:~/current/bin &&
-    rm -rf {{ zato_env_path }}/server1 &&
     zato create server \
         {{ zato_env_path }}/server1/ \
         {{ zato_cluster_name }} \
@@ -458,9 +480,9 @@
 - name: Create Scheduler (02)
   become: true
   become_user: "zato"
+  when: zato_quickstart_disabled
   shell: |
     PATH=$PATH:~/current/bin &&
-    rm -rf {{ zato_env_path }}/scheduler &&
     zato create scheduler \
         {{ zato_env_path }}/scheduler/ \
         --odb-type {{ zato_db_type }} \
@@ -614,13 +636,14 @@
     mkdir -p /opt/hot-deploy/user-conf
     mkdir -p /opt/hot-deploy/enmasse
     chown -R zato:zato /opt/hot-deploy
+    cat /opt/hot-deploy/enmasse/env.ini
 
 - name: Prepare per-component startup scripts (02)
   become: true
   become_user: "root"
   shell: |
     echo "{{ zato_start_preamble }}" > {{ zato_env_path }}/start-server-fg.sh
-    echo "~/current/bin/zato start {{ zato_env_path }}/server1 --fg --env-file /opt/hot-deploy/enmasse/env.ini" >> {{ zato_env_path }}/start-server-fg.sh
+    echo "~/current/bin/zato start {{ zato_env_path }}/server1 >> {{ zato_env_path }}/start-server-fg.sh
 
     echo "{{ zato_start_preamble }}" > {{ zato_env_path }}/start-web-admin-fg.sh
     echo "~/current/bin/zato start {{ zato_env_path }}/web-admin --fg --env-file /opt/hot-deploy/enmasse/env.ini" >> {{ zato_env_path }}/start-web-admin-fg.sh
@@ -656,7 +679,6 @@
       ZATO begin backend bck_http_plain
         server http_plain--{{ zato_server_name }} {{ zato_server_host }}:{{ zato_server_port }} check inter 2s rise 2 fall 2 # ZATO backend bck_http_plain:server--{{ zato_server_name }}
 
-    
 - name: Start the quickstart environment (server) (02)
   become: true
   become_user: "zato"
