@@ -338,7 +338,7 @@
         --verbose
 
 - name: Check if ODB cluster table exists (02)
-  when: zato_use_postgresql and zato_quickstart_disabled
+  when: zato_use_postgresql
   become: true
   become_user: "postgres"
   community.postgresql.postgresql_script:
@@ -366,7 +366,7 @@
         --verbose
 
 - name: Check if ODB cluster exists (02)
-  when: zato_use_postgresql and zato_quickstart_disabled
+  when: zato_use_postgresql
   become: true
   become_user: "postgres"
   community.postgresql.postgresql_script:
