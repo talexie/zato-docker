@@ -285,6 +285,7 @@ class Create(ZatoCommand):
         bunch.kvdb_password = self.get_arg('kvdb_password')
         bunch.cluster_name = cluster_name
         bunch.scheduler_name = 'scheduler1'
+        bunch.skip_if_exists = args.skip_if_exists
 
         return bunch
 
