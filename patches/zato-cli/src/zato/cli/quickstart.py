@@ -260,7 +260,7 @@ class Create(ZatoCommand):
     opts.append({'name':'--servers', 'help':'How many servers to create', 'default':1}) # type: ignore
     opts.append({'name':'--secret-key', 'help':'Main secret key the server(s) will use'})
     opts.append({'name':'--jwt-secret-key', 'help':'Secret key for JWT (JSON Web Tokens)'})
-    opts.append({'name':'--skip-if-exists', 'help':'Return without raising an error if cluster already exists', 'action':'store_true'})
+    #opts.append({'name':'--skip-if-exists', 'help':'Return without raising an error if cluster already exists', 'action':'store_true'})
 
     def _bunch_from_args(self, args, cluster_name):
 
