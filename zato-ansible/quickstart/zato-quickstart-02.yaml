@@ -318,9 +318,9 @@
     rm -rf {{ zato_env_path }}
 
 - name: Create a quickstart environment (02)
+  when: zato_quickstart_disabled
   become: true
   become_user: "zato"
-  when: zato_quickstart_disabled
   shell: |
     PATH=$PATH:~/current/bin &&
     {{ zato_env_path }}/zato-qs-stop.sh || true &&
@@ -406,8 +406,8 @@
         {{ zato_cluster_name }}
 
 - name: Check if Server exists in cluster (02)
-  become: true
   when: zato_quickstart_disabled
+  become: true
   become_user: "postgres"
   community.postgresql.postgresql_script:
     db: "{{ zato_db_main }}"
@@ -421,9 +421,9 @@
   register: server_exists
 
 - name: Create Web Admin/Dashboard (02)
+  when: zato_quickstart_disabled
   become: true
   become_user: "zato"
-  when: zato_quickstart_disabled
   shell: |
     cd /zato_patches
     cp -r --parents * /opt/zato/{{ zato_version }}.0/code
@@ -441,9 +441,9 @@
         --admin-invoke-password {{ zato_dashboard_admin_password }}
 
 - name: Create Load Balancer (02)
+  when: zato_quickstart_disabled
   become: true
   become_user: "zato"
-  when: zato_quickstart_disabled
   shell: |
     PATH=$PATH:~/current/bin &&
     zato create load-balancer \
@@ -452,12 +452,12 @@
 
 - name: Debug Servers in cluster
   ansible.builtin.debug:
-    msg: "Debug: {{ server_exists }}:{{ zato_quickstart_disabled }}"
+    msg: "Debug: {{ server_exists }}: ---{{ zato_quickstart_disabled }}"
 
 - name: Create Server (02)
+  when: zato_quickstart_disabled
   become: true
   become_user: "zato"
-  when: zato_quickstart_disabled
   shell: |
     PATH=$PATH:~/current/bin &&
     zato create server \
@@ -478,9 +478,9 @@
         --jwt-secret {{ zato_jwt_secret }}        
 
 - name: Create Scheduler (02)
+  when: zato_quickstart_disabled
   become: true
   become_user: "zato"
-  when: zato_quickstart_disabled
   shell: |
     PATH=$PATH:~/current/bin &&
     zato create scheduler \
