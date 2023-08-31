@@ -338,7 +338,7 @@
         --verbose
 
 - name: Check if ODB cluster table exists (02)
-  when: zato_use_postgresql && zato_quickstart_disabled
+  when: zato_use_postgresql and zato_quickstart_disabled
   become: true
   become_user: "postgres"
   community.postgresql.postgresql_script:
@@ -350,7 +350,7 @@
   register: cluster_table_exists
 
 - name: Create ODB if it is a new environment (02)
-  when: cluster_table_exists.rowcount < 1 && zato_quickstart_disabled
+  when: cluster_table_exists.rowcount < 1 and zato_quickstart_disabled
   become: true
   become_user: "zato"
   shell: |
@@ -366,7 +366,7 @@
         --verbose
 
 - name: Check if ODB cluster exists (02)
-  when: zato_use_postgresql && zato_quickstart_disabled
+  when: zato_use_postgresql and zato_quickstart_disabled
   become: true
   become_user: "postgres"
   community.postgresql.postgresql_script:
@@ -384,7 +384,7 @@
     msg: "{{ cluster_exists }}"
 
 - name: Create ODB Cluster (02)
-  when: cluster_exists.rowcount == 0 && zato_quickstart_disabled
+  when: cluster_exists.rowcount == 0 and zato_quickstart_disabled
   become: true
   become_user: "zato"
   shell: |
