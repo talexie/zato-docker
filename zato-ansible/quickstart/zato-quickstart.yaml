@@ -98,8 +98,6 @@
 
       zato_db_username_main: "{{ zato_db_username_main }}"
       zato_db_password_main: "{{ zato_db_password_main }}"
-      
-      zato_quickstart_disabled: "{{ zato_quickstart_disabled }}"
 
   tasks:
 

@@ -452,7 +452,7 @@
 
 - name: Debug Servers in cluster
   ansible.builtin.debug:
-    msg: "Debug: {{ server_exists }}"
+    msg: "Debug: {{ server_exists }}:{{ zato_quickstart_disabled }}"
 
 - name: Create Server (02)
   become: true
