@@ -558,17 +558,21 @@
 #  shell: |
 #    ~/current/bin/zato wait --path {{ zato_env_path }}/server1 --timeout {{ zato_server_wait }} --silent
 
-#- name: Check that the server started (02)
-#  uri:
-#    url: http://{{ zato_server_host }}:17010/zato/ping
+- name: Check that the server started (02)
+  uri:
+    url: http://{{ zato_server_host }}:17010/zato/ping
+  register: _result
+  until: _result.status == 200
+  retries: 480 
+  delay: 10 
 
 - name: Check that the load-balancer started (02)
   uri:
     url: http://{{ zato_lb_host }}:11223/zato/ping
   register: _result
-#  until: _result.zato_env.result == 'ZATO_OK'
-#  retries: 20 
-#  delay: 5 
+  until: _result.status == 200
+  retries: 480 
+  delay: 10 
 
 - name: Test services
   debug:
