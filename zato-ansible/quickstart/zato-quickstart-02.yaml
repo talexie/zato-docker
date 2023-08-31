@@ -58,6 +58,10 @@
   become: true
   become_user: "postgres"
   community.postgresql.postgresql_db:
+    db: "{{ zato_db_main }}"
+    login_host: "{{ zato_db_host }}"
+    login_user: "{{ zato_db_username_main }}"
+    login_password: "{{ zato_db_password_main }}"
     state: absent
     force: "yes"
     name: "{{ zato_db_main }}"
@@ -75,6 +79,10 @@
   become: true
   become_user: "postgres"
   community.postgresql.postgresql_db:
+    db: "{{ zato_db_main }}"
+    login_host: "{{ zato_db_host }}"
+    login_user: "{{ zato_db_username_main }}"
+    login_password: "{{ zato_db_password_main }}"
     state: absent
     force: "yes"
     name: "{{ zato_db_pubsub }}"
@@ -92,6 +100,10 @@
   become: true
   become_user: "postgres"
   community.postgresql.postgresql_db:
+    db: "{{ zato_db_main }}"
+    login_host: "{{ zato_db_host }}"
+    login_user: "{{ zato_db_username_main }}"
+    login_password: "{{ zato_db_password_main }}"
     state: present
     encoding: UTF-8
     lc_collate: en_US.UTF-8
@@ -112,6 +124,9 @@
   become: true
   become_user: "postgres"
   community.postgresql.postgresql_db:
+    login_host: "{{ zato_db_host }}"
+    login_user: "{{ zato_db_username_main }}"
+    login_password: "{{ zato_db_password_main }}"
     state: present
     encoding: UTF-8
     lc_collate: en_US.UTF-8
@@ -132,6 +147,10 @@
   become: true
   become_user: "postgres"
   community.postgresql.postgresql_user:
+    db: "{{ zato_db_main }}"
+    login_host: "{{ zato_db_host }}"
+    login_user: "{{ zato_db_username_main }}"
+    login_password: "{{ zato_db_password_main }}"
     state: absent
     fail_on_user: "no"
     name: "{{ zato_db_username_main }}"
@@ -148,6 +167,10 @@
   become: true
   become_user: "postgres"
   community.postgresql.postgresql_user:
+    db: "{{ zato_db_main }}"
+    login_host: "{{ zato_db_host }}"
+    login_user: "{{ zato_db_username_main }}"
+    login_password: "{{ zato_db_password_main }}"
     state: absent
     fail_on_user: "no"
     name: "{{ zato_db_username_pubsub }}"
@@ -166,7 +189,10 @@
   community.postgresql.postgresql_user:
     state: present
     db: "{{ zato_db_main }}"
-    name: "{{ zato_db_username_main }}"
+    login_host: "{{ zato_db_host }}"
+    login_user: "{{ zato_db_username_main }}"
+    login_password: "{{ zato_db_password_main }}"
+    name: "zato_{{ zato_db_username_main }}"
     password: "{{ zato_db_password_main }}"
     encrypted: "yes"
     priv: "ALL"
@@ -188,7 +214,10 @@
   community.postgresql.postgresql_user:
     state: present
     db: "{{ zato_db_pubsub }}"
-    name: "{{ zato_db_username_pubsub }}"
+    login_host: "{{ zato_db_host }}"
+    login_user: "{{ zato_db_username_main }}"
+    login_password: "{{ zato_db_password_main }}"
+    name: "zato_pub_{{ zato_db_username_pubsub }}"
     password: "{{ zato_db_password_pubsub }}"
     encrypted: "yes"
     priv: "ALL"
