@@ -314,7 +314,6 @@
         --odb-db-name {{ zato_db_main }} \
         --odb-user {{ zato_db_username_main }} \
         --odb-password '{{ zato_db_password_main }}' \
-        --skip-if-exists \
         --verbose
 
 - name: Check if ODB cluster exists (02)
@@ -354,7 +353,6 @@
         --secret-key {{ zato_secret_key }} \
         --admin-invoke-password {{ zato_dashboard_admin_password }} \
         --verbose \
-        --skip-if-exists \
         {{ zato_cluster_name }}
 
 - name: Check if Server exists in cluster (02)
@@ -388,7 +386,6 @@
         --odb-db-name {{ zato_db_main }} \
         --odb-user {{ zato_db_username_main }} \
         --odb-password '{{ zato_db_password_main }}' \
-        --skip-if-exists \
         --verbose \
         --admin-invoke-password {{ zato_dashboard_admin_password }}
 
@@ -422,7 +419,6 @@
         --odb-db-name {{ zato_db_main }} \
         --odb-user {{ zato_db_username_main }} \
         --odb-password '{{ zato_db_password_main }}' \
-        --skip-if-exists \
         --verbose \
         --http-port {{ zato_server_port }} \
         --scheduler-host {{ zato_scheduler_host }} \
@@ -444,7 +440,6 @@
         --odb-db-name {{ zato_db_main }} \
         --odb-user {{ zato_db_username_main }} \
         --odb-password '{{ zato_db_password_main }}' \
-        --skip-if-exists \
         --verbose \
         --cluster-name {{ zato_cluster_name }} \
         --server-path {{ zato_env_path }}/server1/ \
