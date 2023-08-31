@@ -478,14 +478,13 @@
     mkdir -p /opt/hot-deploy/user-conf
     mkdir -p /opt/hot-deploy/enmasse
     chown -R zato:zato /opt/hot-deploy
-    cat /opt/hot-deploy/enmasse/env.ini
 
 - name: Prepare per-component startup scripts (02)
   become: true
   become_user: "root"
   shell: |
     echo "{{ zato_start_preamble }}" > {{ zato_env_path }}/start-server-fg.sh
-    echo "~/current/bin/zato start {{ zato_env_path }}/server1" >> {{ zato_env_path }}/start-server-fg.sh
+    echo "~/current/bin/zato start {{ zato_env_path }}/server1 --fg --env-file /opt/hot-deploy/enmasse/env.ini" >> {{ zato_env_path }}/start-server-fg.sh
 
     echo "{{ zato_start_preamble }}" > {{ zato_env_path }}/start-web-admin-fg.sh
     echo "~/current/bin/zato start {{ zato_env_path }}/web-admin --fg --env-file /opt/hot-deploy/enmasse/env.ini" >> {{ zato_env_path }}/start-web-admin-fg.sh
