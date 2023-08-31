@@ -562,9 +562,17 @@
 #  uri:
 #    url: http://{{ zato_server_host }}:17010/zato/ping
 
-#- name: Check that the load-balancer started (02)
-#  uri:
-#    url: http://{{ zato_lb_host }}:11223/zato/ping
+- name: Check that the load-balancer started (02)
+  uri:
+    url: http://{{ zato_lb_host }}:11223/zato/ping
+  register: _result
+#  until: _result.zato_env.result == 'ZATO_OK'
+#  retries: 20 
+#  delay: 5 
+
+- name: Test services
+  debug:
+    msg: "zato response {{ _result }}"
 
 - name: Set Dashboard password (02)
   become: true
