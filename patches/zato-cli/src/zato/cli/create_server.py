@@ -738,14 +738,15 @@ class Create(ZatoCommand):
         cluster = session.query(Cluster).\
             filter(Cluster.name == args.cluster_name).\
             first()
-        server_exists = session.query(Server).\
+        
+        session.query(Server).\
             filter(Server.name == args.server_name).\
-            first()
+            first().delete()
 
         if not cluster:
             self.logger.error("Cluster `%s` doesn't exist in ODB", args.cluster_name)
             return self.SYS_ERROR.NO_SUCH_CLUSTER
-
+            
         server = Server(cluster=cluster)
         server.name = args.server_name
         if isinstance(self.token, (bytes, bytearray)):
@@ -755,10 +756,8 @@ class Create(ZatoCommand):
         server.last_join_status = SERVER_JOIN_STATUS.ACCEPTED
         server.last_join_mod_by = self._get_user_host()
         server.last_join_mod_date = datetime.utcnow()
-        if not server_exists:
-            session.add(server)
-        else:
-            self.logger.info("Server already exists",args.server_name)
+
+        session.add(server)
 
         try:
             if not self.dirs_prepared:
