@@ -727,11 +727,12 @@
 
 - name: Check that the server started (02)
   uri:
-    url: http://{{ zato_server_host }}:17010/zato/ping
+    url: http://{{ zato_server_host }}:{{ 17010 + item|int }}/zato/ping
   register: _server_result
   until: _server_result.status == 200
   retries: 480 
   delay: 20 
+  loop: "{{ range(0,zato_server_num|int,1)|list }}" 
 
 - name: Check that the load-balancer started (02)
   uri:
@@ -739,7 +740,7 @@
   register: _result
   until: _result.status == 200
   retries: 480 
-  delay: 20 
+  delay: 20
 
 - name: Set Dashboard password (02)
   become: true
@@ -790,13 +791,15 @@
   become: true
   become_user: "zato"
   shell: |
-    ~/current/bin/zato enmasse {{ zato_env_path }}/server1 --import --input /opt/hot-deploy/enmasse/enmasse.yaml --env-file /opt/hot-deploy/enmasse/env.ini --replace-odb-objects --exit-on-missing-file --verbose
+    ~/current/bin/zato enmasse {{ zato_env_path }}/{{ 'server%s' | format(item) }} --import --input /opt/hot-deploy/enmasse/enmasse.yaml --env-file /opt/hot-deploy/enmasse/env.ini --replace-odb-objects --exit-on-missing-file --verbose
+  loop: "{{ range(1,zato_server_num|int +1,1)|list }}"
 
 - name: Run enmasse -> /tmp (02)
   become: true
   become_user: "zato"
   shell: |
-    ~/current/bin/zato enmasse {{ zato_env_path }}/server1 --import --input /tmp/enmasse.yaml --env-file /tmp/env.ini --replace-odb-objects --exit-on-missing-file --verbose
+    ~/current/bin/zato enmasse {{ zato_env_path }}/{{ 'server%s' | format(item) }} --import --input /tmp/enmasse.yaml --env-file /tmp/env.ini --replace-odb-objects --exit-on-missing-file --verbose
+  loop: "{{ range(1,zato_server_num|int +1,1)|list }}"
 
 - name: Run the post-install script (02)
   when: zato_post_install_script
