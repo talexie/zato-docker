@@ -478,7 +478,7 @@
         --scheduler-port {{ zato_scheduler_port }} \
         --secret-key {{ zato_secret_key }} \
         --jwt-secret {{ zato_jwt_secret }}
-  loop: "{{ range(1,zato_server_num+1,1)|list }}"        
+  loop: "{{ range(1,zato_server_num|int +1,1)|list }}"        
 
 - name: Create Scheduler (02)
   when: zato_quickstart_disabled == True
