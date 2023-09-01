@@ -1,1 +1,1 @@
-select tablename from pg_tables where tablename='install_state'
+select tablename from pg_tables where tablename='cluster'

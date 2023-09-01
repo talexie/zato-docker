@@ -447,10 +447,7 @@ class Create(ZatoCommand):
         create_cluster_args['admin-invoke-password'] = admin_invoke_password
         create_cluster_args.secret_key = secret_key
         create_cluster.Create(create_cluster_args).execute(create_cluster_args, False)
-        #if create_cluster.Create(create_cluster_args).execute(create_cluster_args, False) == self.SYS_ERROR.CLUSTER_NAME_ALREADY_EXISTS:
-        #    self.logger.info('[{}/{}] Cluster already exists'.format(next(next_step), total_steps))
-        #else:
-        #    self.logger.info('[{}/{}] Cluster created with ODB initial data'.format(next(next_step), total_steps))
+        
         self.logger.info('[{}/{}] ODB initial data created'.format(next(next_step), total_steps))
 
 # ################################################################################################################################
