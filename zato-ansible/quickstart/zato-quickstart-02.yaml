@@ -463,7 +463,7 @@
   shell: |
     PATH=$PATH:~/current/bin &&
     zato create server \
-        {{ zato_env_path }}/{{ 'server%s' | format(item) }}/ \
+        {{ zato_env_path }}/"{{ 'server%s' | format(item) }}"/ \
         {{ zato_cluster_name }} \
         {{ zato_server_name }} \
         --odb-type {{ zato_db_type }} \
@@ -478,7 +478,7 @@
         --scheduler-port {{ zato_scheduler_port }} \
         --secret-key {{ zato_secret_key }} \
         --jwt-secret {{ zato_jwt_secret }}
-  loop: {{ range(1,zato_server_num+1,1)|list }}        
+  loop: "{{ range(1,zato_server_num+1,1)|list }}"        
 
 - name: Create Scheduler (02)
   when: zato_quickstart_disabled == True
