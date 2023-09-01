@@ -336,6 +336,8 @@
         --odb-password '{{ zato_db_password_main }}' \
         --cluster-name '{{ zato_cluster_name }}' \
         --skip-if-exists \
+        --secret-key {{ zato_secret_key }} \
+        --jwt-secret {{ zato_jwt_secret }} \
         --servers {{ zato_server_num }} \
         --verbose
 
@@ -561,8 +563,8 @@
 - name: Check that the server started (02)
   uri:
     url: http://{{ zato_server_host }}:17010/zato/ping
-  register: _result
-  until: _result.status == 200
+  register: _server_result
+  until: _server_result.status == 200
   retries: 480 
   delay: 10 
 
