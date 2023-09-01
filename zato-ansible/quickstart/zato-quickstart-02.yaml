@@ -639,14 +639,18 @@
     mkdir -p /opt/hot-deploy/enmasse
     chown -R zato:zato /opt/hot-deploy
 
-
+- name: Prepare per-server-component startup scripts (02)
+  become: true
+  become_user: "root"
+  shell: |
+    echo "{{ zato_start_preamble }}" > {{ zato_env_path }}/start-{{ 'server%s' | format(item) }}-fg.sh
+    echo "~/current/bin/zato start {{ zato_env_path }}/{{ 'server%s' | format(item) }} --fg --env-file /opt/hot-deploy/enmasse/env.ini" >> {{ zato_env_path }}/start-{{ 'server%s' | format(item) }}-fg.sh
+  loop: "{{ range(1,zato_server_num|int +1,1)|list }}"
   
 - name: Prepare per-component startup scripts (02)
   become: true
   become_user: "root"
   shell: |
-    echo "{{ zato_start_preamble }}" > {{ zato_env_path }}/start-server-fg.sh
-
     echo "{{ zato_start_preamble }}" > {{ zato_env_path }}/start-web-admin-fg.sh
     echo "~/current/bin/zato start {{ zato_env_path }}/web-admin --fg --env-file /opt/hot-deploy/enmasse/env.ini" >> {{ zato_env_path }}/start-web-admin-fg.sh
 
@@ -658,13 +662,6 @@
 
     chown zato:zato {{ zato_env_path }}/start-*.sh
     chmod 764 {{ zato_env_path }}/start-*.sh
-
-- name: Prepare per-server-component startup scripts (02)
-  become: true
-  become_user: "root"
-  shell: |
-    echo "~/current/bin/zato start {{ zato_env_path }}/{{ 'server%s' | format(item) }} --fg --env-file /opt/hot-deploy/enmasse/env.ini" >> {{ zato_env_path }}/start-server-fg.sh
-  loop: "{{ range(1,zato_server_num|int +1,1)|list }}"
 
 - name: Set extlib structure (02)
   when: zato_ext_lib_dir
@@ -693,9 +690,10 @@
   become: true
   become_user: "zato"
   shell: |
-    ~/env/qs-1/start-server-fg.sh
+    ~/env/qs-1/start-{{ 'server%s' | format(item) }}-fg.sh
   async: "{{ zato_async_timeout }}"
   poll: 0
+  loop: "{{ range(1,zato_server_num|int +1,1)|list }}" 
 
 - name: Start the quickstart environment (dashboard) (02)
   become: true
@@ -753,7 +751,8 @@
   become: true
   become_user: "zato"
   shell: |
-    ~/current/bin/zato set-ide-password {{ zato_env_path }}/server1 --password {{ zato_ide_publisher_password }} --verbose
+    ~/current/bin/zato set-ide-password {{ zato_env_path }}/{{ 'server%s' | format(item) }} --password {{ zato_ide_publisher_password }} --verbose
+  loop: "{{ range(1,zato_server_num|int +1,1)|list }}" 
 
 - name: Make sure the directory for config files exists (02)
   become: true
