@@ -469,7 +469,7 @@
         --odb-user {{ zato_db_username_main }} \
         --odb-password '{{ zato_db_password_main }}' \
         --verbose \
-        --http-port {{ zato_server_port }} \
+        --http-port {{ zato_server_port|int + item|int }} \
         --scheduler-host {{ zato_scheduler_host }} \
         --scheduler-port {{ zato_scheduler_port }} \
         --secret-key {{ zato_secret_key }} \
@@ -639,12 +639,13 @@
     mkdir -p /opt/hot-deploy/enmasse
     chown -R zato:zato /opt/hot-deploy
 
+
+  
 - name: Prepare per-component startup scripts (02)
   become: true
   become_user: "root"
   shell: |
     echo "{{ zato_start_preamble }}" > {{ zato_env_path }}/start-server-fg.sh
-    echo "~/current/bin/zato start {{ zato_env_path }}/server1 --fg --env-file /opt/hot-deploy/enmasse/env.ini" >> {{ zato_env_path }}/start-server-fg.sh
 
     echo "{{ zato_start_preamble }}" > {{ zato_env_path }}/start-web-admin-fg.sh
     echo "~/current/bin/zato start {{ zato_env_path }}/web-admin --fg --env-file /opt/hot-deploy/enmasse/env.ini" >> {{ zato_env_path }}/start-web-admin-fg.sh
@@ -657,6 +658,13 @@
 
     chown zato:zato {{ zato_env_path }}/start-*.sh
     chmod 764 {{ zato_env_path }}/start-*.sh
+
+- name: Prepare per-server-component startup scripts (02)
+  become: true
+  become_user: "root"
+  shell: |
+    echo "~/current/bin/zato start {{ zato_env_path }}/{{ 'server%s' | format(item) }} --fg --env-file /opt/hot-deploy/enmasse/env.ini" >> {{ zato_env_path }}/start-server-fg.sh
+  loop: "{{ range(1,zato_server_num|int +1,1)|list }}"
 
 - name: Set extlib structure (02)
   when: zato_ext_lib_dir
@@ -678,7 +686,7 @@
     regexp: 'ZATO begin backend bck_http_plain'
     replace: |-
       ZATO begin backend bck_http_plain
-        server http_plain--"{{ 'server%s' | format(item) }}" {{ zato_server_host }}:{{ zato_server_port }} check inter 2s rise 2 fall 2 # ZATO backend bck_http_plain:server--{{ zato_server_name }}
+        server http_plain--"{{ 'server%s' | format(item) }}" {{ zato_server_host }}:{{ zato_server_port|int + item|int }} check inter 2s rise 2 fall 2 # ZATO backend bck_http_plain:server--"{{ 'server%s' | format(item) }}"
   loop: "{{ range(1,zato_server_num|int +1,1)|list }}" 
 
 - name: Start the quickstart environment (server) (02)
