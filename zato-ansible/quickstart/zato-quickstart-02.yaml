@@ -366,7 +366,6 @@
         --odb-db-name {{ zato_db_main }} \
         --odb-user {{ zato_db_username_main }} \
         --odb-password '{{ zato_db_password_main }}' \
-        --skip-if-exists \
         --verbose
 
 - name: Check if ODB cluster exists (02)
@@ -405,11 +404,10 @@
         --lb-agent_port {{ zato_lb_agent_port }} \
         --secret-key {{ zato_secret_key }} \
         --admin-invoke-password {{ zato_dashboard_admin_password }} \
-        --skip-if-exists \
         --verbose \
         {{ zato_cluster_name }}
 
-- name: Check if Server exists in cluster (02)
+- name: Check if Server exists in cluster and remove server (02)
   when: zato_quickstart_disabled == True
   become: true
   become_user: "postgres"

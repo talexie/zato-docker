@@ -98,7 +98,7 @@
     update_cache: true
 
 - name: Install OpenJDK (for Spark Analytics) (01)
-  when: zato_run_spark
+  when: zato_run_spark == True
   apt:
     state: latest
     name: openjdk-17-jdk
