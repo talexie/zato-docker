@@ -382,9 +382,9 @@
       cluster_name: "{{ zato_cluster_name }}"
   register: cluster_exists
 
-- name: Debug ODB cluster
+- name: Existing ODB cluster
   ansible.builtin.debug:
-    msg: "{{ cluster_exists }}"
+    msg: "ODB cluster found : {{ cluster_exists.rowcount }}"
 
 - name: Create ODB Cluster (02)
   when: cluster_exists.rowcount == 0 and zato_quickstart_disabled == True
@@ -452,9 +452,9 @@
         --verbose \
         {{ zato_env_path }}/load-balancer/
 
-- name: Debug Servers in cluster
+- name: Remove Servers from cluster
   ansible.builtin.debug:
-    msg: "Debug: {{ server_exists }}"
+    msg: "Servers removed : {{ server_exists.rowcount }}"
 
 - name: Create Server (02)
   when: zato_quickstart_disabled == True
@@ -724,7 +724,7 @@
   register: _server_result
   until: _server_result.status == 200
   retries: 480 
-  delay: 10 
+  delay: 20 
 
 - name: Check that the load-balancer started (02)
   uri:
@@ -732,11 +732,7 @@
   register: _result
   until: _result.status == 200
   retries: 480 
-  delay: 10 
-
-- name: Test services
-  debug:
-    msg: "zato response {{ _result }}"
+  delay: 20 
 
 - name: Set Dashboard password (02)
   become: true

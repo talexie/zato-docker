@@ -739,14 +739,14 @@ class Create(ZatoCommand):
             filter(Cluster.name == args.cluster_name).\
             first()
 
-        session.query(Server).\
-            filter(Server.name == args.server_name).\
-            delete()
-
         if cluster is None:
             self.logger.error("Cluster `%s` doesn't exist in ODB", args.cluster_name)
             return self.SYS_ERROR.NO_SUCH_CLUSTER
-            
+        
+        server_delete=session.query(Server).\
+            filter(Server.name == args.server_name).\
+            delete()
+    
         server = Server(cluster=cluster)
         server.name = args.server_name
         if isinstance(self.token, (bytes, bytearray)):
