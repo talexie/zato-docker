@@ -420,7 +420,6 @@
     named_args:
       server_id: "{{ 'server%s' | format(item) }}"
       cluster_name: "{{ zato_cluster_name }}"
-  register: server_exists
   loop: "{{ range(1,zato_server_num|int +1,1)|list }}"   
 
 - name: Create Web Admin/Dashboard (02)
@@ -452,10 +451,6 @@
     zato create load-balancer \
         --verbose \
         {{ zato_env_path }}/load-balancer/
-
-- name: Remove Servers from cluster
-  ansible.builtin.debug:
-    msg: "Servers removed : {{ server_exists.rowcount }}"
 
 - name: Create Server (02)
   when: zato_quickstart_disabled == True
@@ -685,7 +680,7 @@
       ZATO begin backend bck_http_plain
         server http_plain--"{{ 'server%s' | format(item) }}" {{ zato_server_host }}:{{ zato_server_port }} check inter 2s rise 2 fall 2 # ZATO backend bck_http_plain:server--{{ zato_server_name }}
   loop: "{{ range(1,zato_server_num|int +1,1)|list }}" 
-  
+
 - name: Start the quickstart environment (server) (02)
   become: true
   become_user: "zato"
