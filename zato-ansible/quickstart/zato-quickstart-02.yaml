@@ -418,9 +418,10 @@
     login_password: "{{ zato_db_password_main }}"
     path: "/var/lib/postgresql/scripts/test_server_cluster.sql"
     named_args:
-      server_id: "{{ zato_server_name }}"
+      server_id: "{{ 'server%s' | format(item) }}"
       cluster_name: "{{ zato_cluster_name }}"
   register: server_exists
+  loop: "{{ range(1,zato_server_num|int +1,1)|list }}"   
 
 - name: Create Web Admin/Dashboard (02)
   when: zato_quickstart_disabled == True
@@ -465,7 +466,7 @@
     zato create server \
         {{ zato_env_path }}/"{{ 'server%s' | format(item) }}"/ \
         {{ zato_cluster_name }} \
-        {{ zato_server_name }} \
+        "{{ 'server%s' | format(item) }}" \
         --odb-type {{ zato_db_type }} \
         --odb-host {{ zato_db_host }} \
         --odb-port {{ zato_db_port }} \
@@ -505,27 +506,30 @@
   become: true
   become_user: "zato"
   replace:
-    path: "{{ zato_env_path }}/server1/config/repo/server.conf"
+    path: "{{ zato_env_path }}/{{ 'server%s' | format(item) }}/config/repo/server.conf"
     regexp: "^host=$"
     replace: "host=localhost"
+  loop: "{{ range(1,zato_server_num|int +1,1)|list }}"   
 
 - name: Enable internal services (if testing) (02)
   when: zato_run_internal_tests
   become: true
   become_user: "zato"
   replace:
-    path: "{{ zato_env_path }}/server1/config/repo/server.conf"
+    path: "{{ zato_env_path }}/{{ 'server%s' | format(item) }}/config/repo/server.conf"
     regexp: "service_invoker_allow_internal="
     replace: "service_invoker_allow_internal=/zato/api/invoke/{service_name}"
+  loop: "{{ range(1,zato_server_num|int +1,1)|list }}"   
 
 - name: Enable SSO (if testing) (02)
   when: zato_run_internal_tests
   become: true
   become_user: "zato"
   replace:
-    path: "{{ zato_env_path }}/server1/config/repo/server.conf"
+    path: "{{ zato_env_path }}/{{ 'server%s' | format(item) }}/config/repo/server.conf"
     regexp: "sso=False"
     replace: "sso=True"
+  loop: "{{ range(1,zato_server_num|int +1,1)|list }}"   
 
 - name: Prepare the work directory for configuration details (02)
   shell: |
@@ -679,8 +683,9 @@
     regexp: 'ZATO begin backend bck_http_plain'
     replace: |-
       ZATO begin backend bck_http_plain
-        server http_plain--{{ zato_server_name }} {{ zato_server_host }}:{{ zato_server_port }} check inter 2s rise 2 fall 2 # ZATO backend bck_http_plain:server--{{ zato_server_name }}
-
+        server http_plain--"{{ 'server%s' | format(item) }}" {{ zato_server_host }}:{{ zato_server_port }} check inter 2s rise 2 fall 2 # ZATO backend bck_http_plain:server--{{ zato_server_name }}
+  loop: "{{ range(1,zato_server_num|int +1,1)|list }}" 
+  
 - name: Start the quickstart environment (server) (02)
   become: true
   become_user: "zato"
