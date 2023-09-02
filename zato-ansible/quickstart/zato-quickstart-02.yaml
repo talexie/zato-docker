@@ -418,9 +418,7 @@
     login_password: "{{ zato_db_password_main }}"
     path: "/var/lib/postgresql/scripts/test_server_cluster.sql"
     named_args:
-      server_id: "{{ 'server%s' | format(item) }}"
       cluster_name: "{{ zato_cluster_name }}"
-  loop: "{{ range(1,zato_server_num|int +1,1)|list }}"   
 
 - name: Create Web Admin/Dashboard (02)
   when: zato_quickstart_disabled == True
@@ -492,7 +490,6 @@
         --odb-password '{{ zato_db_password_main }}' \
         --verbose \
         --cluster-name {{ zato_cluster_name }} \
-        --server-path {{ zato_env_path }}/server1/ \
         --secret-key {{ zato_secret_key }} \
         --initial-sleep-time 30     
 
