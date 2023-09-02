@@ -1,1 +1,1 @@
-delete from server y where y.id = (select t.id from server t left join cluster c on t.cluster_id = c.id where c.name = %(cluster_name)s )
+delete from server y where y.cluster_id = (select c.id from cluster c where c.name = %(cluster_name)s )
