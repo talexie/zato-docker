@@ -491,6 +491,8 @@
         --verbose \
         --cluster-name {{ zato_cluster_name }} \
         --secret-key {{ zato_secret_key }} \
+        --server-host {{ zato_server_host }} \
+        --server-port {{ zato_server_port }} \
         --initial-sleep-time 30     
 
 - name: Enable Redis (02)

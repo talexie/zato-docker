@@ -132,7 +132,7 @@
         zato_jwt_secret: "{{ Zato_Jwt_Secret | mandatory }}"
 
         zato_scheduler_host: "{{ Zato_Scheduler_Host | default('127.0.0.1') or '127.0.0.1' }}"
-        zato_scheduler_port: "{{ Zato_Scheduler_Port | default('998877') or '998877' }}"
+        zato_scheduler_port: "{{ Zato_Scheduler_Port | default('31530') or '31530' }}"
 
         zato_server_host: "{{ Zato_Host_Server_Host | default('127.0.0.1') or '127.0.0.1' }}"
         zato_server_port: "{{ Zato_Host_Server_Port | default('17010') or '17010' }}"
