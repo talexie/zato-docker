@@ -105,8 +105,6 @@
     login_password: "{{ zato_db_password_main }}"
     state: present
     encoding: UTF-8
-    lc_collate: en_US.UTF-8
-    lc_ctype: en_US.UTF-8
     template: template0
     name: "{{ zato_db_main }}"
 
