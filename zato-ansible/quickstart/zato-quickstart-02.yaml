@@ -636,7 +636,9 @@
     mkdir -p /opt/hot-deploy/services
     mkdir -p /opt/hot-deploy/user-conf
     mkdir -p /opt/hot-deploy/enmasse
+    mkdir -p /opt/his_interoperability
     chown -R zato:zato /opt/hot-deploy
+    chown -R zato:zato /opt/his_interoperability
 
 - name: Prepare per-server-component startup scripts (02)
   become: true
