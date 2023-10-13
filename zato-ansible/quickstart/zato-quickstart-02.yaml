@@ -815,3 +815,18 @@
     export PATH=$PATH:~/current/bin
     cd {{ zato_tests_base_dir }}
     make run-tests
+
+- name: Get Interoperability Services
+  become: true
+  become_user: "zato"
+  ansible.builtin.git:
+    repo: https://github.com/nataaha/his_interoperability.git
+    dest: /opt/his_interoperability
+    single_branch: yes
+    version: master
+
+- name: Copy the Interoperability services
+  become: true
+  become_user: "zato"
+  shell: |
+    cp /opt/his_interoperability/*.py /opt/hot-deploy/services
