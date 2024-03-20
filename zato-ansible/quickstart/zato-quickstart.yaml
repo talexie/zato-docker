@@ -71,6 +71,10 @@
         export ZATO_HOT_DEPLOY_DIR=/opt/hot-deploy/services
         export ZATO_USER_CONF_DIR=/opt/hot-deploy/user-conf:/tmp/zato-user-conf
         export ZATO_HOT_DEPLOY_PREFER_SNAPSHOTS={{ zato_hot_deploy_prefer_snapshots }}
+        export Zato_Is_Quickstart={{ zato_is_quickstart }}
+        export Zato_Log_Env_Details={{ zato_log_env_details }}
+        export Zato_TLS_Verify={{ zato_tls_verify }}
+        export Zato_Is_Docker=True
         
     environment_config:
 
@@ -105,7 +109,9 @@
 
     - name: Set facts (init)
       set_fact:
+        zato_is_docker: True
 
+        zato_password: "{{ lookup('ansible.builtin.env', 'Zato_Password', default='') }}"
         zato_python_reqs: "{{ zato_python_reqs_tmp if zato_has_python_reqs_in_tmp else zato_python_reqs_opt }}"
         zato_run_spark: "{{ Zato_Run_Spark | default(True)}}"
         zato_quickstart_disabled: "{{ Zato_Quickstart_Disabled | default(True) }}"
@@ -146,6 +152,30 @@
         zato_firewall_limit_to_local_connections: "{{ Zato_Firewall_Limit_To_Local_Connections | default(False) }}"
 
         zato_hashicorp_vault_token: "{{ Zato_Hashicorp_Vault_Token | default(zato_hashicorp_vault_token) or zato_hashicorp_vault_token }}"
+        
+        zato_create_extra_user_01: "{{ Zato_Create_Extra_User_01 | default(False) }}"
+        zato_create_extra_user_02: "{{ Zato_Create_Extra_User_02 | default(False) }}"
+        zato_create_extra_user_03: "{{ Zato_Create_Extra_User_03 | default(False) }}"
+        zato_create_extra_user_04: "{{ Zato_Create_Extra_User_04 | default(False) }}"
+        zato_create_extra_user_05: "{{ Zato_Create_Extra_User_05 | default(False) }}"
+
+        zato_create_extra_user_01_gid: "{{ Zato_Create_Extra_User_01_GID | default(False) }}"
+        zato_create_extra_user_02_gid: "{{ Zato_Create_Extra_User_02_GID | default(False) }}"
+        zato_create_extra_user_03_gid: "{{ Zato_Create_Extra_User_03_GID | default(False) }}"
+        zato_create_extra_user_04_gid: "{{ Zato_Create_Extra_User_04_GID | default(False) }}"
+        zato_create_extra_user_05_gid: "{{ Zato_Create_Extra_User_05_GID | default(False) }}"
+
+        zato_create_extra_user_01_uid: "{{ Zato_Create_Extra_User_01_UID | default(False) }}"
+        zato_create_extra_user_02_uid: "{{ Zato_Create_Extra_User_02_UID | default(False) }}"
+        zato_create_extra_user_03_uid: "{{ Zato_Create_Extra_User_03_UID | default(False) }}"
+        zato_create_extra_user_04_uid: "{{ Zato_Create_Extra_User_04_UID | default(False) }}"
+        zato_create_extra_user_05_uid: "{{ Zato_Create_Extra_User_05_UID | default(False) }}"
+
+        zato_is_quickstart: "{{ Zato_Is_Quickstart | default(False) }}"
+        zato_log_env_details: "{{ Zato_Log_Env_Details | default(False) }}"
+        zato_tls_verify: "{{ Zato_TLS_Verify | default(True) }}"
+
+        zato_run_internal_tests: "{{ Zato_Run_Internal_Tests | default(False) }}"
 
     - name: Run tasks 01 (init)
       when: zato_qs_run_01

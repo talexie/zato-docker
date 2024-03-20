@@ -1,11 +1,4 @@
- 
-- name: Update and upgrade apt packages (02)
-  apt:
-    upgrade: yes
-    update_cache: true
-    cache_valid_time: 3600
-
-- name: Install NodeJS (for testing) (02)
+ - name: Install NodeJS (for testing) (02)
   when: zato_run_internal_tests or zato_install_playwright
   shell: |
     curl -sL https://deb.nodesource.com/setup_16.x | bash -
@@ -289,7 +282,7 @@
 - name: Set the SSH password for user 'zato' (02)
   user:
     name: zato
-    password: "{{ zato_ssh_user_password | password_hash('sha512') }}"
+    password: "{{ zato_password or zato_ssh_user_password | password_hash('sha512') }}"
 
 - name: Install HashiCorp Vault (02)
   when: zato_use_hashicorp_vault
@@ -312,6 +305,55 @@
     /usr/bin/vault server -dev -dev-root-token-id={{ zato_hashicorp_vault_token }}
   async: "{{ zato_async_timeout }}"
   poll: 0
+- name: Create extra user and add Zato to its group 1 (02)
+  when: zato_create_extra_user_01
+  shell: |
+    groupadd {{ zato_create_extra_user_01 }} \
+       --gid {{ zato_create_extra_user_01_gid }} || true
+    useradd {{ zato_create_extra_user_01 }}     \
+      --uid {{ zato_create_extra_user_01_uid }} \
+      --gid {{ zato_create_extra_user_01_gid }} || true
+    usermod -aG {{ zato_create_extra_user_01 }} zato
+
+- name: Create extra user and add Zato to its group 2 (02)
+  when: zato_create_extra_user_02
+  shell: |
+    groupadd {{ zato_create_extra_user_02 }} \
+       --gid {{ zato_create_extra_user_02_gid }} || true
+    useradd {{ zato_create_extra_user_02 }}     \
+      --uid {{ zato_create_extra_user_02_uid }} \
+      --gid {{ zato_create_extra_user_02_gid }} || true
+    usermod -aG {{ zato_create_extra_user_02 }} zato
+
+- name: Create extra user and add Zato to its group 3 (02)
+  when: zato_create_extra_user_03
+  shell: |
+    groupadd {{ zato_create_extra_user_03 }}
+       --gid {{ zato_create_extra_user_03_gid }} || true
+    useradd {{ zato_create_extra_user_03 }}     \
+      --uid {{ zato_create_extra_user_03_uid }} \
+      --gid {{ zato_create_extra_user_03_gid }} || true
+    usermod -aG {{ zato_create_extra_user_03 }} zato
+
+- name: Create extra user and add Zato to its group 4 (02)
+  when: zato_create_extra_user_04
+  shell: |
+    groupadd {{ zato_create_extra_user_04 }} \
+       --gid {{ zato_create_extra_user_04_gid }} || true
+    useradd {{ zato_create_extra_user_04 }}     \
+      --uid {{ zato_create_extra_user_04_uid }} \
+      --gid {{ zato_create_extra_user_04_gid }} || true
+    usermod -aG {{ zato_create_extra_user_04` }} zato
+
+- name: Create extra user and add Zato to its group 5 (02)
+  when: zato_create_extra_user_05
+  shell: |
+    groupadd {{ zato_create_extra_user_05 }} \
+       --gid {{ zato_create_extra_user_05_gid }} || true
+    useradd {{ zato_create_extra_user_05 }}     \
+      --uid {{ zato_create_extra_user_05_uid }} \
+      --gid {{ zato_create_extra_user_05_gid }} || true
+    usermod -aG {{ zato_create_extra_user_05 }} zato
 
 - name: Make sure any previous environment is deleted (02)
   shell: |
@@ -326,7 +368,7 @@
     cp -r --parents * /opt/zato/{{ zato_version }}.0/code
     PATH=$PATH:~/current/bin &&
     {{ zato_env_path }}/zato-qs-stop.sh || true &&
-    zato quickstart \
+    Zato_Server_To_Scheduler_Use_TLS=False zato quickstart \
         {{ zato_env_path }} \
         --odb-type {{ zato_db_type }} \
         --odb-host {{ zato_db_host }} \
@@ -594,12 +636,17 @@
     echo ":set noincsearch" >> ~/.vimrc
     echo "export PATH=$PATH:~/current/bin" >> ~/.bashrc
     echo "source /usr/share/mc/bin/mc.sh" >> ~/.bashrc
+    echo "tail -f -n 500 ~/env/qs-1/server1/logs/access.log" >> ~/.bash_history
+    echo "tail -f -n 500 ~/env/qs-1/server1/logs/server.log" >> ~/.bash_history
     echo 'SELECTED_EDITOR="/usr/bin/vim.basic"' >> ~/.selected-editor
 
     echo "export PYTHONPATH=$PYTHONPATH:/opt/zato/current/extlib" >> ~/.bashrc
     echo "export ZATO_HOT_DEPLOY_DIR=/opt/hot-deploy/services" >> ~/.bashrc
     echo "export ZATO_USER_CONF_DIR=/opt/hot-deploy/user-conf:/tmp/zato-user-conf" >> ~/.bashrc
     echo "export ZATO_HOT_DEPLOY_PREFER_SNAPSHOTS={{ zato_hot_deploy_prefer_snapshots }}" >> ~/.bashrc
+    echo "export Zato_Is_Quickstart={{ zato_is_quickstart }}" >> ~/.bashrc
+    echo "export Zato_Log_Env_Details={{ zato_log_env_details }}" >> ~/.bashrc
+    echo "export Zato_TLS_Verify={{ zato_tls_verify }}" >> ~/.bashrc
 
     echo "source ~/.bashrc_zato" >> ~/.bashrc
 
