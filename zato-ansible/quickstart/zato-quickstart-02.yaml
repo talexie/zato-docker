@@ -130,7 +130,7 @@
   become_user: "postgres"
   community.postgresql.postgresql_user:
     state: present
-    #db: "{{ zato_db_main }}"
+    db: "postgres"
     login_host: "{{ zato_db_host }}"
     login_password: "{{ zato_db_password_main }}"
     name: "zato_{{ zato_db_username_main }}"
@@ -154,7 +154,7 @@
   become_user: "postgres"
   community.postgresql.postgresql_user:
     state: present
-    #db: "{{ zato_db_pubsub }}"
+    db: "postgres"
     login_host: "{{ zato_db_host }}"
     login_password: "{{ zato_db_password_main }}"
     name: "zato_pub_{{ zato_db_username_pubsub }}"
