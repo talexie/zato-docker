@@ -34,7 +34,7 @@ ENV Zato_Run_Quickstart_Step_02=true
 EXPOSE 8183
 
 # Server
-EXPOSE 17010
+EXPOSE 17010 17011 17012
 
 # SSH
 EXPOSE 22
