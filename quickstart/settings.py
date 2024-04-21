@@ -58,11 +58,11 @@ INTERNAL_IPS = ('127.0.0.1',)
 USE_I18N = True
 
 DEBUG = os.environ.get('Zato_Dashboard_Debug_Enabled') or False
-#CSRF_TRUSTED_ORIGINS = ['https://dev.nataaha.com']
-CSRF_TRUSTED_ORIGINS=[]
+CSRF_TRUSTED_ORIGINS = ['https://dev.nataaha.com']
+#CSRF_TRUSTED_ORIGINS=[]
 
-if csrf_trusted_origins := os.environ.get('Zato_Django_CSRF_TRUSTED_ORIGINS'):
-    CSRF_TRUSTED_ORIGINS = list([f'{csrf_trusted_origins}'])
+#if csrf_trusted_origins := os.environ.get('Zato_Django_CSRF_TRUSTED_ORIGINS'):
+#    CSRF_TRUSTED_ORIGINS = list([f'{csrf_trusted_origins}'])
 
 APPEND_SLASH = True
 SECURE_CONTENT_TYPE_NOSNIFF = False
