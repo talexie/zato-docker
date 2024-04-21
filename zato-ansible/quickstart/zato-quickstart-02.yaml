@@ -130,7 +130,7 @@
   become_user: "postgres"
   community.postgresql.postgresql_user:
     state: present
-    db: "{{ zato_db_main }}"
+    #db: "{{ zato_db_main }}"
     login_host: "{{ zato_db_host }}"
     login_password: "{{ zato_db_password_main }}"
     name: "zato_{{ zato_db_username_main }}"
@@ -154,7 +154,7 @@
   become_user: "postgres"
   community.postgresql.postgresql_user:
     state: present
-    db: "{{ zato_db_pubsub }}"
+    #db: "{{ zato_db_pubsub }}"
     login_host: "{{ zato_db_host }}"
     login_password: "{{ zato_db_password_main }}"
     name: "zato_pub_{{ zato_db_username_pubsub }}"
@@ -172,28 +172,8 @@
     password: "{{ zato_db_password_pubsub }}"
     priv: '*.*:ALL,GRANT'
 
-- name: Grant access to the SQL user (PG -> main) (02)
-  when: zato_use_postgresql
-  community.postgresql.postgresql_pg_hba:
-    create: "yes"
-    dest: "{{ pg_hba_conf_path }}"
-    contype: host
-    users: "{{ zato_db_username_main }}"
-    source: all
-    databases: "{{ zato_db_main }}, postgres"
-    method: md5
 
-- name: Grant access to the SQL user (PG -> pub/sub) (02)
-  when: zato_use_postgresql
-  community.postgresql.postgresql_pg_hba:
-    create: "yes"
-    dest: "{{ pg_hba_conf_path }}"
-    contype: host
-    users: "{{ zato_db_username_pubsub }}"
-    source: all
-    databases: "{{ zato_db_pubsub }}, postgres"
-    method: md5
-    
+
 # - name: Drop the SQL database if it exists (PG -> main) (02)
 #  when: zato_use_postgresql
 #  become: true
@@ -244,10 +224,11 @@
     login_host: "{{ zato_db_host }}"
     login_user: "{{ zato_db_username_main }}"
     login_password: "{{ zato_db_password_main }}"
+    owner: "{{ zato_db_username_main }}"
     state: present
     encoding: UTF-8
-    #lc_collate: en_US.UTF-8
-    #lc_ctype: en_US.UTF-8
+    lc_collate: en_US.UTF-8
+    lc_ctype: en_US.UTF-8
     template: template0
     name: "{{ zato_db_main }}"
 
@@ -267,10 +248,11 @@
     login_host: "{{ zato_db_host }}"
     login_user: "{{ zato_db_username_main }}"
     login_password: "{{ zato_db_password_main }}"
+    owner: "{{ zato_db_username_main }}"
     state: present
     encoding: UTF-8
-    #lc_collate: en_US.UTF-8
-    #lc_ctype: en_US.UTF-8
+    lc_collate: en_US.UTF-8
+    lc_ctype: en_US.UTF-8
     template: template0
     name: "{{ zato_db_pubsub }}"
 
@@ -281,6 +263,33 @@
     state: present
     force: "yes"
     name: "{{ zato_db_pubsub }}"
+
+- name: Grant access to the SQL user (PG -> main) (02)
+  when: zato_use_postgresql
+  community.postgresql.postgresql_pg_hba:
+    create: "yes"
+    dest: "{{ pg_hba_conf_path }}"
+    contype: host
+    users: "{{ zato_db_username_main }}"
+    source: all
+    databases: "{{ zato_db_main }}, postgres"
+    method: md5
+
+- name: Grant access to the SQL user (PG -> pub/sub) (02)
+  when: zato_use_postgresql
+  community.postgresql.postgresql_pg_hba:
+    create: "yes"
+    dest: "{{ pg_hba_conf_path }}"
+    contype: host
+    users: "{{ zato_db_username_pubsub }}"
+    source: all
+    databases: "{{ zato_db_pubsub }}, postgres"
+    method: md5
+
+- name: Restart PostgreSQL after its configuration was changed (02)
+  when: zato_use_postgresql
+  shell: |
+    DEBIAN_FRONTEND=noninteractive service postgresql restart
 
 - name: Install HashiCorp Vault (02)
   when: zato_use_hashicorp_vault
