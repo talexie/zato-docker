@@ -62,7 +62,8 @@ DEBUG = os.environ.get('Zato_Dashboard_Debug_Enabled') or False
 CSRF_TRUSTED_ORIGINS=[]
 
 if csrf_trusted_origins := os.environ.get('Zato_Django_CSRF_TRUSTED_ORIGINS'):
-    CSRF_TRUSTED_ORIGINS = [f'{csrf_trusted_origins}']
+    #CSRF_TRUSTED_ORIGINS = [f'{csrf_trusted_origins}']
+    CSRF_TRUSTED_ORIGINS = [element.strip() for element in csrf_trusted_origins]
 print(CSRF_TRUSTED_ORIGINS)
 
 APPEND_SLASH = True
